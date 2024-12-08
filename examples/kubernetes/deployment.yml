@@ -23,7 +23,7 @@ spec:
             - /bin/elasticsearch_exporter
             - --es.uri=http://elasticsearch:9200
             - --es.all
-          image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
+          image: registry.cn-hangzhou.aliyuncs.com/k8s-docker-image-mirror-bxl/elasticsearch-exporter:latest
           securityContext:
             capabilities:
               drop:
