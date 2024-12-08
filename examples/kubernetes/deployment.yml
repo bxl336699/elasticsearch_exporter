@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elastic-exporter
+  namespace: monitor-sa
 spec:
   replicas: 1
   strategy:
@@ -21,7 +22,7 @@ spec:
       containers:
         - command:
             - /bin/elasticsearch_exporter
-            - --es.uri=http://elasticsearch:9200
+            - --es.uri=http://elasticsearch.kube-logging.svc.cluster.local:9200
             - --es.all
           image: registry.cn-hangzhou.aliyuncs.com/k8s-docker-image-mirror-bxl/elasticsearch-exporter:latest
           securityContext:
@@ -71,3 +72,23 @@ spec:
         runAsGroup: 10000
         runAsUser: 10000
         fsGroup: 10000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: elastic-exporter
+  name: elastic-exporter
+  namespace: monitor-sa
+spec:
+  ports:
+  - name: 9114-9114
+    port: 9114
+    protocol: TCP
+    targetPort: 9114
+  selector:
+    app: elastic-exporter
+  type: ClusterIP
+status:
+  loadBalancer: {}
